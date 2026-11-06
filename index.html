@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3DPrinter Calculator – Calcolatore Costi Stampa 3D</title>
+  <meta name="description" content="Calcola costo reale e prezzo di vendita delle stampe 3D: filamento, energia, ammortamento, manodopera, fallimenti, commissioni e sconti quantità.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1>🧊 Calcolatore Costi Stampa 3D</h1>
+  <p class="sub">Costo reale e prezzo di vendita di un pezzo stampato. I dati restano salvati nel tuo browser.</p>
+</header>
+
+<main class="layout">
+  <div class="forms">
+
+    <!-- 1. LAVORO -->
+    <section class="card">
+      <h2>1 · Lavoro</h2>
+      <div class="grid">
+        <label class="span2">Nome lavoro / cliente
+          <input id="jobName" type="text" placeholder="es. Portachiavi logo – Mario">
+        </label>
+        <label>Quantità ordinata (pezzi)
+          <input id="qty" type="number" min="1" step="1" value="1">
+        </label>
+        <label>Pezzi per piatto
+          <input id="perPlate" type="number" min="1" step="1" value="1">
+          <small>Quanti pezzi escono da una stampa</small>
+        </label>
+        <label>Tempo stampa per piatto – ore
+          <input id="hours" type="number" min="0" step="1" value="2">
+        </label>
+        <label>… minuti
+          <input id="minutes" type="number" min="0" max="59" step="1" value="0">
+        </label>
+      </div>
+      <div class="gcode">
+        <label class="file-btn">📄 Importa da G-code
+          <input id="gcodeFile" type="file" accept=".gcode,.gco,.g,.3mf,.txt">
+        </label>
+        <small id="gcodeInfo">Legge tempo e grammi da Bambu Studio / OrcaSlicer (.gcode o .gcode.3mf slicato), PrusaSlicer, Cura.</small>
+      </div>
+    </section>
+
+    <!-- 2. STAMPANTE -->
+    <section class="card">
+      <h2>2 · Stampante</h2>
+      <div class="grid">
+        <label class="span2">Modello
+          <select id="printerSel"></select>
+        </label>
+        <label>Prezzo d'acquisto (€)
+          <input id="pPrice" type="number" min="0" step="1">
+          <small>Includi AMS/upgrade se li usi</small>
+        </label>
+        <label>Consumo medio in stampa (W)
+          <input id="pPower" type="number" min="0" step="1">
+        </label>
+        <label>Vita utile stimata (ore)
+          <input id="pLife" type="number" min="1" step="100">
+        </label>
+        <label>Manutenzione (€/ora)
+          <input id="pMaint" type="number" min="0" step="0.01">
+          <small>Ugelli, piatti, cinghie, ricambi</small>
+        </label>
+      </div>
+      <p class="hint" id="wearInfo"></p>
+      <div class="row-actions">
+        <button type="button" class="ghost" id="savePrinter">💾 Salva come stampante personalizzata</button>
+        <button type="button" class="ghost danger hidden" id="delPrinter">🗑 Elimina personalizzata</button>
+      </div>
+    </section>
+
+    <!-- 3. FILAMENTI -->
+    <section class="card">
+      <h2>3 · Filamenti</h2>
+      <p class="hint">Aggiungi più righe per stampe multicolore/multimateriale. Grammi per <b>piatto</b> (come indicati dallo slicer).</p>
+      <div id="filaments"></div>
+      <div class="row-actions">
+        <button type="button" class="ghost" id="addFil">➕ Aggiungi filamento</button>
+      </div>
+      <div class="grid">
+        <label>Spreco extra per piatto (g)
+          <input id="waste" type="number" min="0" step="1" value="0">
+          <small>Spurgo AMS, prime tower, brim se non inclusi</small>
+        </label>
+      </div>
+    </section>
+
+    <!-- 4. COSTI OPERATIVI -->
+    <section class="card">
+      <h2>4 · Costi operativi</h2>
+      <div class="grid">
+        <label>Energia elettrica (€/kWh)
+          <input id="kwh" type="number" min="0" step="0.01" value="0.28">
+          <small>Vedi la tua bolletta (tutto incluso)</small>
+        </label>
+        <label>Tasso fallimenti (%)
+          <input id="failRate" type="number" min="0" max="90" step="1" value="5">
+          <small>Stampe da rifare su 100</small>
+        </label>
+        <label>Tua tariffa oraria (€/h)
+          <input id="laborRate" type="number" min="0" step="0.5" value="15">
+        </label>
+        <label>Preparazione per piatto (min)
+          <input id="prepMin" type="number" min="0" step="1" value="10">
+          <small>Slicing, avvio, pulizia piatto, rimozione</small>
+        </label>
+        <label>Post‑produzione per pezzo (min)
+          <input id="postMin" type="number" min="0" step="1" value="5">
+          <small>Rimozione supporti, carteggiatura, verniciatura</small>
+        </label>
+        <label>Costi fissi per ordine (€)
+          <input id="orderFixed" type="number" min="0" step="0.01" value="0">
+          <small>Imballaggio, scatola, etichette</small>
+        </label>
+        <label>Progettazione / modellazione (€)
+          <input id="designFee" type="number" min="0" step="0.5" value="0">
+          <small>Una tantum, sull'ordine</small>
+        </label>
+        <label>Supplemento urgenza (€)
+          <input id="rushFee" type="number" min="0" step="0.5" value="0">
+          <small>Consegna rapida / precedenza in coda</small>
+        </label>
+      </div>
+    </section>
+
+    <!-- 5. COMPONENTI AGGIUNTIVI -->
+    <section class="card">
+      <h2>5 · Componenti aggiuntivi</h2>
+      <p class="hint">Magneti, LED, pulsanti, viti, inserti… Quantità <b>per pezzo</b>. Le righe a 0 vengono ignorate.</p>
+      <table class="extras-table">
+        <thead><tr><th>Oggetto</th><th>€/unità</th><th>Q.tà per pezzo</th><th>Totale</th><th></th></tr></thead>
+        <tbody id="extras"></tbody>
+      </table>
+      <div class="row-actions">
+        <button type="button" class="ghost" id="addExtra">➕ Aggiungi oggetto</button>
+      </div>
+    </section>
+
+    <!-- 6. PREZZO -->
+    <section class="card">
+      <h2>6 · Prezzo di vendita</h2>
+      <div class="grid">
+        <label>Ricarico sul costo (%)
+          <input id="markup" type="number" min="0" step="5" value="60">
+          <small>Hobby 30–60%, marketplace 60–150%</small>
+        </label>
+        <label>Commissione piattaforma (%)
+          <input id="feePct" type="number" min="0" max="80" step="0.5" value="0">
+          <small>Etsy ≈ 6,5% + 4% pagamento, Vinted 0%</small>
+        </label>
+        <label>Commissione fissa per ordine (€)
+          <input id="feeFixed" type="number" min="0" step="0.01" value="0">
+        </label>
+        <label>IVA (%)
+          <input id="vat" type="number" min="0" max="50" step="1" value="0">
+          <small>0 se privato o forfettario, 22 con P.IVA ordinaria</small>
+        </label>
+        <label>Prezzo minimo per ordine (€)
+          <input id="minOrder" type="number" min="0" step="0.5" value="0">
+          <small>Sotto questa cifra non conviene accendere la stampante</small>
+        </label>
+        <label>Arrotondamento prezzo unitario
+          <select id="rounding">
+            <option value="0">Nessuno (centesimi)</option>
+            <option value="0.1">A 0,10 €</option>
+            <option value="0.5" selected>A 0,50 €</option>
+            <option value="1">All'euro</option>
+            <option value="psy">Prezzo psicologico (x,90)</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <!-- 6. SCONTI -->
+    <section class="card">
+      <h2>7 · Sconti quantità</h2>
+      <p class="hint">Lo sconto si applica sul prezzo unitario in base ai pezzi ordinati. Non scende mai sotto il costo: se succede vedrai un avviso.</p>
+      <table class="disc-table">
+        <thead><tr><th>Da (pezzi)</th><th>Sconto %</th><th></th></tr></thead>
+        <tbody id="discounts"></tbody>
+      </table>
+      <div class="row-actions">
+        <button type="button" class="ghost" id="addDisc">➕ Aggiungi fascia</button>
+        <button type="button" class="ghost" id="resetDisc">↺ Fasce predefinite</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RISULTATI -->
+  <aside class="results">
+    <section class="card result-card">
+      <h2>Risultato</h2>
+      <div class="big">
+        <div>
+          <span class="lbl">Prezzo per pezzo</span>
+          <span class="val" id="rUnit">–</span>
+          <span class="note" id="rUnitNote"></span>
+        </div>
+        <div>
+          <span class="lbl">Totale ordine</span>
+          <span class="val accent" id="rTotal">–</span>
+          <span class="note" id="rTotalNote"></span>
+        </div>
+      </div>
+      <div id="warnings"></div>
+
+      <h3>Costo per pezzo</h3>
+      <table class="breakdown">
+        <tbody id="breakdown"></tbody>
+      </table>
+
+      <h3>Riepilogo ordine</h3>
+      <table class="breakdown">
+        <tbody id="summary"></tbody>
+      </table>
+
+      <h3>Listino per quantità</h3>
+      <table class="tiers">
+        <thead><tr><th>Pezzi</th><th>Sconto</th><th>€/pezzo</th><th>Totale</th><th>Margine</th></tr></thead>
+        <tbody id="tierTable"></tbody>
+      </table>
+
+      <div class="row-actions">
+        <button type="button" id="saveQuote">💾 Salva preventivo</button>
+        <button type="button" class="ghost" id="copyQuote">📋 Copia testo</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Preventivi salvati</h2>
+      <ul id="quotes" class="quotes"></ul>
+      <div class="row-actions">
+        <button type="button" class="ghost" id="exportBtn">⬇ Esporta backup</button>
+        <label class="ghost file-btn">⬆ Importa backup
+          <input id="importFile" type="file" accept=".json">
+        </label>
+        <button type="button" class="ghost danger" id="resetAll">Ripristina tutto</button>
+      </div>
+    </section>
+  </aside>
+</main>
+
+<footer class="foot">
+  <details>
+    <summary>Come viene calcolato</summary>
+    <ul>
+      <li><b>Materiale</b> = grammi × €/kg ÷ 1000 (+ spreco extra).</li>
+      <li><b>Energia</b> = ore × W ÷ 1000 × €/kWh.</li>
+      <li><b>Ammortamento</b> = ore × (prezzo stampante ÷ vita utile + manutenzione/ora).</li>
+      <li><b>Fallimenti</b>: i costi del piatto (materiale, energia, macchina, preparazione) vengono divisi per (1 − tasso fallimenti), perché ogni stampa riuscita deve ripagare anche quelle fallite.</li>
+      <li>Il costo del piatto viene diviso per i pezzi per piatto; poi si aggiungono post‑produzione e componenti per pezzo.</li>
+      <li><b>Prezzo</b> = costo × (1 + ricarico), maggiorato per coprire la commissione % della piattaforma, poi sconto quantità, arrotondamento e IVA.</li>
+      <li>Costi fissi d'ordine, progettazione, urgenza e commissione fissa vengono aggiunti al totale ordine (senza ricarico: sono già un prezzo).</li>
+    </ul>
+    <p>I prezzi di stampanti e filamenti sono indicativi: modificali con i tuoi.</p>
+  </details>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

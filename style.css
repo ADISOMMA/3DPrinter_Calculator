@@ -193,3 +193,13 @@ th { color: var(--muted); font-weight: 600; font-size: .78rem; }
 .extras-table td:nth-child(2), .extras-table td:nth-child(3) { width: 90px; }
 .extras-table .ex-tot { text-align: right; white-space: nowrap; width: 70px; color: var(--muted); }
 .extras-table tr.used .ex-tot { color: var(--text); font-weight: 600; }
+
+.friend-box { border: 1px dashed var(--border); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+.friend-box.on { border: 1px solid #e0a42f; background: color-mix(in srgb, #e0a42f 10%, transparent); }
+.friend-opts { margin-top: 10px; display: none; }
+.friend-box.on .friend-opts { display: grid; }
+label.check { flex-direction: row; align-items: flex-start; gap: 10px; cursor: pointer; }
+label.check input { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; accent-color: var(--accent); }
+label.check span { display: flex; flex-direction: column; gap: 2px; }
+.small-check { align-self: center; }
+.result-card.friends .big .val { color: #e0a42f; }

@@ -25,7 +25,10 @@ const FIELDS = [
   "waste", "kwh", "failRate", "laborRate", "prepMin", "postMin",
   "orderFixed", "designFee", "rushFee",
   "markup", "feePct", "feeFixed", "vat", "minOrder", "rounding",
+  "friendMarkup",
 ];
+// Checkbox salvate nello stato
+const CHECKS = ["friendMode", "friendLabor"];
 
 function loadJSON(key, fallback) {
   try {
@@ -239,8 +242,8 @@ function roundPrice(v, mode) {
 }
 
 /* ---------- Calcolo ---------- */
-function readInputs() {
-  return {
+function readInputs(normal = false) {
+  const inp = {
     qty: Math.max(1, Math.floor(num("qty"))),
     perPlate: Math.max(1, Math.floor(num("perPlate"))),
     hours: Math.max(0, num("hours") + num("minutes") / 60),
@@ -257,7 +260,18 @@ function readInputs() {
     minOrder: num("minOrder"),
     rounding: $("rounding").value,
     filaments: filamentRows.map((r) => ({ ...r })),
+    friends: false,
   };
+  if (!normal && $("friendMode").checked) applyFriends(inp);
+  return inp;
+}
+
+/** Modalità amici & famiglia: solo costi vivi + piccolo margine. */
+function applyFriends(inp) {
+  inp.friends = true;
+  inp.markup = Math.max(0, num("friendMarkup") / 100);
+  inp.feePct = 0; inp.feeFixed = 0; inp.minOrder = 0; inp.rushFee = 0;
+  if (!$("friendLabor").checked) { inp.laborRate = 0; inp.designFee = 0; }
 }
 
 /** Costo di produzione per pezzo (indipendente dalla quantità). */
@@ -294,7 +308,7 @@ function unitCost(inp) {
 
 /** Prezzi e totali per una certa quantità. */
 function quote(inp, uc, qty) {
-  const disc = discountFor(qty);
+  const disc = inp.friends ? 0 : discountFor(qty);
   const target = uc.total * (1 + inp.markup);             // quanto vuoi incassare netto per pezzo
   const listNet = target / (1 - inp.feePct);               // listino che copre la commissione %
   const discNet = listNet * (1 - disc);
@@ -345,7 +359,16 @@ function update() {
 
   // Big numbers
   $("rUnit").textContent = fmt(q.unitGross);
-  $("rUnitNote").textContent = q.disc > 0
+  $("friendBox").classList.toggle("on", inp.friends);
+  document.querySelector(".result-card").classList.toggle("friends", inp.friends);
+  let normalQ = null;
+  if (inp.friends) {
+    const n = readInputs(true);
+    normalQ = quote(n, unitCost(n), n.qty);
+  }
+  $("rUnitNote").textContent = inp.friends
+    ? `👨‍👩‍👦 prezzo amici · normale ${fmt(normalQ.unitGross)}`
+    : q.disc > 0
     ? `listino ${fmt(roundPrice(q.listGross, inp.rounding))} − ${pct(q.disc)} sconto`
     : (inp.vat > 0 ? "IVA inclusa" : "");
   $("rTotal").textContent = fmt(q.totalGross);
@@ -354,6 +377,7 @@ function update() {
   // Warnings
   const w = [];
   if (q.belowCost) w.push(`⚠️ Con lo sconto del ${pct(q.disc)} il prezzo scende sotto il costo di produzione (${fmt(uc.total)}/pz). Riduci lo sconto o aumenta il ricarico.`);
+  if (inp.friends) w.push(`👨‍👩‍👦 Prezzo amici attivo: ${inp.laborRate ? "costi + tuo tempo" : "solo costi vivi (tempo regalato)"} + ${pct(inp.markup)}. Il prezzo normale sarebbe ${fmt(normalQ.totalGross)}: l'amico risparmia ${fmt(normalQ.totalGross - q.totalGross)}.`);
   else if (q.margin < 0.15 && q.revenueNet > 0) w.push(`⚠️ Margine basso (${pct(q.margin)}): ogni imprevisto ti porta in perdita.`);
   if (q.minApplied) w.push(`ℹ️ Applicato il prezzo minimo d'ordine (${fmt(inp.minOrder)}).`);
   if (inp.qty % inp.perPlate !== 0) w.push(`ℹ️ ${inp.qty} pezzi non riempiono esattamente i piatti (${inp.perPlate}/piatto): l'ultimo piatto sarà parziale.`);
@@ -400,12 +424,14 @@ function formatHours(h) {
 function getState() {
   const fields = {};
   for (const id of FIELDS) fields[id] = $(id).value;
+  for (const id of CHECKS) fields[id] = $(id).checked;
   return { fields, printer: $("printerSel").value, filaments: filamentRows, discounts, extras };
 }
 
 function setState(st) {
   if (st.printer && findPrinter(st.printer)) renderPrinterSelect(st.printer);
   for (const id of FIELDS) if (st.fields && st.fields[id] !== undefined) $(id).value = st.fields[id];
+  for (const id of CHECKS) $(id).checked = !!st.fields?.[id];
   filamentRows = (st.filaments && st.filaments.length ? st.filaments : [{ id: "gen-pla", price: 18, grams: 0 }])
     .map((r) => ({ id: findFilament(r.id) ? r.id : "gen-pla", price: r.price, grams: r.grams }));
   discounts = (st.discounts || DEFAULT_DISCOUNTS).map((d) => ({ ...d }));
@@ -466,7 +492,7 @@ function quoteText() {
   const { inp, uc, q } = lastResult;
   const name = $("jobName").value.trim();
   const lines = [
-    `Preventivo stampa 3D${name ? " – " + name : ""}`,
+    `Preventivo stampa 3D${name ? " – " + name : ""}${inp.friends ? " (prezzo amici 😉)" : ""}`,
     `Data: ${new Date().toLocaleDateString("it-IT")}`,
     ``,
     `Quantità: ${q.qty} pz`,
@@ -697,6 +723,7 @@ function init() {
   if (!$("pPrice").value) applyPrinter($("printerSel").value);
 
   $("printerSel").addEventListener("change", () => { applyPrinter($("printerSel").value); updateDelPrinterBtn(); update(); });
+  for (const id of CHECKS) $(id).addEventListener("change", update);
   for (const id of FIELDS) {
     $(id).addEventListener("input", update);
     $(id).addEventListener("change", update);

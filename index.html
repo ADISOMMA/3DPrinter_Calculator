@@ -145,6 +145,22 @@
     <!-- 6. PREZZO -->
     <section class="card">
       <h2>6 · Prezzo di vendita</h2>
+      <div class="friend-box" id="friendBox">
+        <label class="check">
+          <input type="checkbox" id="friendMode">
+          <span>👨‍👩‍👦 <b>Prezzo amici &amp; famiglia</b><small>Copri le spese e guadagni il minimo: niente ricarico pieno, commissioni, urgenza o sconti quantità.</small></span>
+        </label>
+        <div class="grid friend-opts">
+          <label>Margine amici (%)
+            <input id="friendMarkup" type="number" min="0" step="5" value="10">
+            <small>0 = prezzo di costo puro</small>
+          </label>
+          <label class="check small-check">
+            <input type="checkbox" id="friendLabor">
+            <span>Fai pagare anche il mio tempo<small>Preparazione, rifinitura e progettazione</small></span>
+          </label>
+        </div>
+      </div>
       <div class="grid">
         <label>Ricarico sul costo (%)
           <input id="markup" type="number" min="0" step="5" value="60">

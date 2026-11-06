@@ -43,6 +43,7 @@ const FILAMENTS = [
   { id: "gen-pc",      brand: "Generico",  name: "PC",             type: "PC",    price: 35 },
   { id: "bambu-pla-basic", brand: "Bambu Lab", name: "PLA Basic",  type: "PLA",   price: 20 },
   { id: "bambu-pla-matte", brand: "Bambu Lab", name: "PLA Matte",  type: "PLA",   price: 20 },
+  { id: "bambu-pla-sparkle", brand: "Bambu Lab", name: "PLA Sparkle", type: "PLA", price: 28 },
   { id: "bambu-petg-hf",   brand: "Bambu Lab", name: "PETG HF",    type: "PETG",  price: 20 },
   { id: "bambu-abs",       brand: "Bambu Lab", name: "ABS",        type: "ABS",   price: 21 },
   { id: "bambu-tpu",       brand: "Bambu Lab", name: "TPU for AMS",type: "TPU",   price: 40 },

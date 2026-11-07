@@ -399,3 +399,62 @@ td { padding: 7px 6px; vertical-align: middle; }
 .forms, .results, .step-body, .result-card, .fil-list, .alerts { grid-template-columns: minmax(0, 1fr); }
 .ttl { margin-right: auto; }
 .chip { margin-left: 0; }
+
+/* ---------- Selettore tema ---------- */
+.theme-switch {
+  margin-left: auto; display: flex; gap: 2px; padding: 3px;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 11px;
+}
+.theme-switch button {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 600 .8rem var(--f-body); color: #9fb3b9;
+  padding: 7px 10px; border: 0; border-radius: 8px; background: transparent; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.theme-switch svg { width: 16px; height: 16px; }
+.theme-switch button:hover { color: var(--head-ink); }
+.theme-switch button[aria-pressed="true"] { background: rgba(246,189,82,.16); color: #f6bd52; }
+@media (max-width: 700px) { .theme-switch span { display: none; } .theme-switch button { padding: 8px; } }
+
+/* ---------- Ottimizzazioni smartphone ---------- */
+button, summary, .dropzone, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+@media (hover: none) {
+  .step > summary:hover .ttl { color: inherit; }
+  .btn.ghost:hover { border-color: var(--line); color: var(--ink); }
+  .icon-btn:hover { color: var(--ink-3); border-color: transparent; background: transparent; }
+}
+@media (max-width: 1000px) {
+  /* 16px nei campi: iPhone non fa più lo zoom quando tocchi un numero */
+  input, select { font-size: 16px; padding: 11px 12px; }
+  .ctl input { padding-right: 3.4em; }
+  /* Bersagli tattili da almeno 44px */
+  .icon-btn { width: 42px; height: 42px; }
+  .btn { padding: 12px 15px; }
+  .btn.small { padding: 10px 12px; }
+  .mode button { padding: 11px 10px; }
+  .step > summary { min-height: 56px; }
+  .step { scroll-margin-top: 10px; }
+  .layout { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .actions .btn { flex: 1 1 auto; justify-content: center; }
+}
+@media (max-width: 520px) {
+  body { font-size: 15.5px; }
+  .masthead-in { padding-top: calc(14px + env(safe-area-inset-top)); padding-bottom: 12px; gap: 11px; }
+  .logo { width: 40px; height: 40px; border-radius: 10px; }
+  .tagline { font-size: .8rem; }
+  .layout { gap: 14px; padding-top: 14px; }
+  .forms { gap: 10px; }
+  .panel { padding: 15px; }
+  .hero .val { font-size: 2.3rem; }
+  .extras-table td:nth-child(2), .extras-table td:nth-child(3) { width: 74px; }
+  .extras-table .ex-tot { width: 62px; }
+  .disc-table { max-width: none; }
+  .mobilebar { left: 10px; right: 10px; }
+  .foot { padding: 0 14px calc(110px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 400px) { .tagline { display: none; } }
+@media (max-width: 330px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+:root[data-theme="dark"] .mobilebar { background: #1d3038; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 10px 30px -8px rgba(0,0,0,.8); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mobilebar { background: #1d3038; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 10px 30px -8px rgba(0,0,0,.8); }
+}

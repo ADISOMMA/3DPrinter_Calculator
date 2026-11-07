@@ -16,6 +16,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,650;12..96,800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Tema scelto dall'utente applicato prima del disegno della pagina (niente lampeggio)
+    (function () {
+      try { var t = localStorage.getItem("c3d.theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -36,6 +42,9 @@
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6 M12 7.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
     <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z M7.5 8.5h.01" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+    <symbol id="i-auto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
@@ -46,6 +55,11 @@
     <div>
       <h1>3DPrinter Calculator</h1>
       <p class="tagline">Quanto ti costa davvero una stampa, e a quanto venderla.</p>
+    </div>
+    <div class="theme-switch" role="group" aria-label="Tema">
+      <button type="button" data-theme-opt="light" title="Tema chiaro" aria-label="Tema chiaro"><svg aria-hidden="true"><use href="#i-sun"/></svg><span>Chiaro</span></button>
+      <button type="button" data-theme-opt="auto" title="Come il dispositivo" aria-label="Tema automatico"><svg aria-hidden="true"><use href="#i-auto"/></svg><span>Auto</span></button>
+      <button type="button" data-theme-opt="dark" title="Tema scuro" aria-label="Tema scuro"><svg aria-hidden="true"><use href="#i-moon"/></svg><span>Scuro</span></button>
     </div>
   </div>
   <div class="layers" aria-hidden="true"></div>

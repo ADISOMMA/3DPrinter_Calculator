@@ -9,6 +9,7 @@ const LS_QUOTES = "c3d.quotes.v1";
 const LS_CUSTOM_PRINTERS = "c3d.customPrinters.v1";
 const LS_CUSTOM_FILAMENTS = "c3d.customFilaments.v1";
 const LS_OPEN = "c3d.openSections.v1";
+const LS_THEME = "c3d.theme";
 
 const $ = (id) => document.getElementById(id);
 const icon = (name) => `<svg aria-hidden="true"><use href="#i-${name}"/></svg>`;
@@ -825,6 +826,25 @@ function init() {
     location.reload();
   });
 
+  // Selettore tema: Auto (come il dispositivo) / Chiaro / Scuro
+  const themeBtns = document.querySelectorAll("[data-theme-opt]");
+  const darkMq = window.matchMedia("(prefers-color-scheme: dark)");
+  const applyTheme = (t) => {
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    else delete document.documentElement.dataset.theme;
+    themeBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeOpt === (t || "auto"))));
+    const dark = t === "dark" || (t !== "light" && darkMq.matches);
+    document.querySelector('meta[name="theme-color"]').content = dark ? "#0f1d22" : "#13262b";
+  };
+  let theme = localStorage.getItem(LS_THEME) || "auto";
+  applyTheme(theme);
+  darkMq.addEventListener?.("change", () => applyTheme(theme));
+  themeBtns.forEach((b) => b.addEventListener("click", () => {
+    theme = b.dataset.themeOpt;
+    if (theme === "auto") localStorage.removeItem(LS_THEME); else localStorage.setItem(LS_THEME, theme);
+    applyTheme(theme);
+  }));
+
   // Selettore Cliente / Amici
   $("modeClient").addEventListener("click", () => setFriendMode(false));
   $("modeFriend").addEventListener("click", () => setFriendMode(true));
@@ -834,6 +854,14 @@ function init() {
   document.querySelectorAll("details.step").forEach((d) => {
     if (d.id in openState) d.open = openState[d.id];
     d.addEventListener("toggle", () => { openState[d.id] = d.open; saveJSON(LS_OPEN, openState); });
+    // Su telefono: la sezione aperta con un tocco viene portata in cima allo schermo
+    d.querySelector("summary").addEventListener("click", () => {
+      if (d.open || !window.matchMedia("(max-width: 1000px)").matches) return;
+      setTimeout(() => {
+        const top = d.getBoundingClientRect().top;
+        if (top < 0 || top > window.innerHeight * 0.45) d.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 30);
+    });
   });
 
   // Trascina e rilascia il file dello slicer

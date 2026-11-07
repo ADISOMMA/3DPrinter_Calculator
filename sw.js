@@ -1,6 +1,6 @@
 // Service worker: rete prima (così gli aggiornamenti arrivano subito), cache come riserva offline.
-const CACHE = "c3d-v3";
-const CORE = ["./", "index.html", "style.css", "app.js", "data.js", "favicon.svg", "manifest.webmanifest", "icon-192.png"];
+const CACHE = "c3d-v4";
+const CORE = ["./", "index.html", "style.css?v=4", "app.js?v=4", "data.js?v=4", "favicon.svg", "manifest.webmanifest", "icon-192.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));

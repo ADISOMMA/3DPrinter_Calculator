@@ -12,7 +12,7 @@ const LS_OPEN = "c3d.openSections.v1";
 const LS_THEME = "c3d.theme";
 
 const $ = (id) => document.getElementById(id);
-const icon = (name) => `<svg aria-hidden="true"><use href="#i-${name}"/></svg>`;
+const icon = (name) => `<svg width="16" height="16" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const eur = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
 const fmt = (n) => (Number.isFinite(n) ? eur.format(n) : "–");
 const pct = (n) => (Number.isFinite(n) ? (n * 100).toLocaleString("it-IT", { maximumFractionDigits: 1 }) + "%" : "–");

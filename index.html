@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,650;12..96,800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=4">
   <script>
     // Tema scelto dall'utente applicato prima del disegno della pagina (niente lampeggio)
     (function () {
@@ -57,9 +57,9 @@
       <p class="tagline">Quanto ti costa davvero una stampa, e a quanto venderla.</p>
     </div>
     <div class="theme-switch" role="group" aria-label="Tema">
-      <button type="button" data-theme-opt="light" title="Tema chiaro" aria-label="Tema chiaro"><svg aria-hidden="true"><use href="#i-sun"/></svg><span>Chiaro</span></button>
-      <button type="button" data-theme-opt="auto" title="Come il dispositivo" aria-label="Tema automatico"><svg aria-hidden="true"><use href="#i-auto"/></svg><span>Auto</span></button>
-      <button type="button" data-theme-opt="dark" title="Tema scuro" aria-label="Tema scuro"><svg aria-hidden="true"><use href="#i-moon"/></svg><span>Scuro</span></button>
+      <button type="button" data-theme-opt="light" title="Tema chiaro" aria-label="Tema chiaro"><svg width="16" height="16" aria-hidden="true"><use href="#i-sun"/></svg><span>Chiaro</span></button>
+      <button type="button" data-theme-opt="auto" title="Come il dispositivo" aria-label="Tema automatico"><svg width="16" height="16" aria-hidden="true"><use href="#i-auto"/></svg><span>Auto</span></button>
+      <button type="button" data-theme-opt="dark" title="Tema scuro" aria-label="Tema scuro"><svg width="16" height="16" aria-hidden="true"><use href="#i-moon"/></svg><span>Scuro</span></button>
     </div>
   </div>
   <div class="layers" aria-hidden="true"></div>
@@ -73,7 +73,7 @@
       <summary>
         <span class="num">01</span><span class="ttl">Lavoro</span>
         <span class="chip" id="sum-job"></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+        <svg class="chev" width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg>
       </summary>
       <div class="step-body">
         <div class="grid">
@@ -97,7 +97,7 @@
         </div>
         <label class="dropzone" id="dropzone">
           <input id="gcodeFile" type="file" accept=".gcode,.gco,.g,.3mf,.txt">
-          <svg class="ico"><use href="#i-file"/></svg>
+          <svg class="ico" width="26" height="26" aria-hidden="true"><use href="#i-file"/></svg>
           <span><b>Importa dallo slicer</b> (trascina qui o clicca)<small id="gcodeInfo">G-code o .gcode.3mf da Bambu Studio, OrcaSlicer, PrusaSlicer, Cura: compila tempo e grammi.</small></span>
         </label>
       </div>
@@ -108,7 +108,7 @@
       <summary>
         <span class="num">02</span><span class="ttl">Stampante</span>
         <span class="chip" id="sum-printer"></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+        <svg class="chev" width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg>
       </summary>
       <div class="step-body">
         <div class="grid">
@@ -133,8 +133,8 @@
         </div>
         <p class="hint mono" id="wearInfo"></p>
         <div class="actions">
-          <button type="button" class="btn ghost" id="savePrinter"><svg><use href="#i-save"/></svg>Salva come personalizzata</button>
-          <button type="button" class="btn ghost danger hidden" id="delPrinter"><svg><use href="#i-trash"/></svg>Elimina personalizzata</button>
+          <button type="button" class="btn ghost" id="savePrinter"><svg width="16" height="16" aria-hidden="true"><use href="#i-save"/></svg>Salva come personalizzata</button>
+          <button type="button" class="btn ghost danger hidden" id="delPrinter"><svg width="16" height="16" aria-hidden="true"><use href="#i-trash"/></svg>Elimina personalizzata</button>
         </div>
       </div>
     </details>
@@ -144,13 +144,13 @@
       <summary>
         <span class="num">03</span><span class="ttl">Filamenti</span>
         <span class="chip" id="sum-fil"></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+        <svg class="chev" width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg>
       </summary>
       <div class="step-body">
         <p class="hint">Una riga per ogni filamento usato (multicolore e AMS). Grammi per <b>piatto</b>, come li indica lo slicer.</p>
         <div id="filaments" class="fil-list"></div>
         <div class="actions">
-          <button type="button" class="btn ghost" id="addFil"><svg><use href="#i-plus"/></svg>Aggiungi filamento</button>
+          <button type="button" class="btn ghost" id="addFil"><svg width="16" height="16" aria-hidden="true"><use href="#i-plus"/></svg>Aggiungi filamento</button>
         </div>
         <div class="grid sep">
           <label class="field"><span class="lab">Spreco extra per piatto</span>
@@ -166,7 +166,7 @@
       <summary>
         <span class="num">04</span><span class="ttl">Costi operativi</span>
         <span class="chip" id="sum-ops"></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+        <svg class="chev" width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg>
       </summary>
       <div class="step-body">
         <div class="grid">
@@ -210,7 +210,7 @@
       <summary>
         <span class="num">05</span><span class="ttl">Componenti aggiuntivi</span>
         <span class="chip" id="sum-extras"></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+        <svg class="chev" width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg>
       </summary>
       <div class="step-body">
         <p class="hint">Magneti, LED, pulsanti, viti, inserti. Quantità <b>per pezzo</b>: le righe a 0 non contano.</p>
@@ -221,7 +221,7 @@
           </table>
         </div>
         <div class="actions">
-          <button type="button" class="btn ghost" id="addExtra"><svg><use href="#i-plus"/></svg>Aggiungi oggetto</button>
+          <button type="button" class="btn ghost" id="addExtra"><svg width="16" height="16" aria-hidden="true"><use href="#i-plus"/></svg>Aggiungi oggetto</button>
         </div>
       </div>
     </details>
@@ -231,7 +231,7 @@
       <summary>
         <span class="num">06</span><span class="ttl">Prezzo di vendita</span>
         <span class="chip" id="sum-price"></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+        <svg class="chev" width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg>
       </summary>
       <div class="step-body">
         <div class="grid">
@@ -273,7 +273,7 @@
       <summary>
         <span class="num">07</span><span class="ttl">Sconti quantità</span>
         <span class="chip" id="sum-disc"></span>
-        <svg class="chev"><use href="#i-chev"/></svg>
+        <svg class="chev" width="18" height="18" aria-hidden="true"><use href="#i-chev"/></svg>
       </summary>
       <div class="step-body">
         <p class="hint">Sconto sul prezzo unitario in base ai pezzi ordinati. Se uno sconto ti porta sotto costo compare un avviso.</p>
@@ -282,8 +282,8 @@
           <tbody id="discounts"></tbody>
         </table>
         <div class="actions">
-          <button type="button" class="btn ghost" id="addDisc"><svg><use href="#i-plus"/></svg>Aggiungi fascia</button>
-          <button type="button" class="btn ghost" id="resetDisc"><svg><use href="#i-reset"/></svg>Fasce predefinite</button>
+          <button type="button" class="btn ghost" id="addDisc"><svg width="16" height="16" aria-hidden="true"><use href="#i-plus"/></svg>Aggiungi fascia</button>
+          <button type="button" class="btn ghost" id="resetDisc"><svg width="16" height="16" aria-hidden="true"><use href="#i-reset"/></svg>Fasce predefinite</button>
         </div>
       </div>
     </details>
@@ -293,8 +293,8 @@
   <aside class="results" id="results">
     <section class="panel result-card">
       <div class="mode" role="group" aria-label="Tipo di prezzo">
-        <button type="button" id="modeClient" aria-pressed="true"><svg><use href="#i-tag"/></svg>Cliente</button>
-        <button type="button" id="modeFriend" aria-pressed="false"><svg><use href="#i-heart"/></svg>Amici &amp; famiglia</button>
+        <button type="button" id="modeClient" aria-pressed="true"><svg width="16" height="16" aria-hidden="true"><use href="#i-tag"/></svg>Cliente</button>
+        <button type="button" id="modeFriend" aria-pressed="false"><svg width="16" height="16" aria-hidden="true"><use href="#i-heart"/></svg>Amici &amp; famiglia</button>
       </div>
 
       <div class="friend-box" id="friendBox">
@@ -347,8 +347,8 @@
       </div>
 
       <div class="actions">
-        <button type="button" class="btn" id="saveQuote"><svg><use href="#i-save"/></svg>Salva preventivo</button>
-        <button type="button" class="btn ghost" id="copyQuote"><svg><use href="#i-copy"/></svg>Copia testo</button>
+        <button type="button" class="btn" id="saveQuote"><svg width="16" height="16" aria-hidden="true"><use href="#i-save"/></svg>Salva preventivo</button>
+        <button type="button" class="btn ghost" id="copyQuote"><svg width="16" height="16" aria-hidden="true"><use href="#i-copy"/></svg>Copia testo</button>
       </div>
     </section>
 
@@ -356,11 +356,11 @@
       <h2 class="panel-title">Preventivi salvati</h2>
       <ul id="quotes" class="quotes"></ul>
       <div class="actions">
-        <button type="button" class="btn ghost small" id="exportBtn"><svg><use href="#i-down"/></svg>Esporta backup</button>
-        <label class="btn ghost small"><svg><use href="#i-up"/></svg>Importa backup
+        <button type="button" class="btn ghost small" id="exportBtn"><svg width="16" height="16" aria-hidden="true"><use href="#i-down"/></svg>Esporta backup</button>
+        <label class="btn ghost small"><svg width="16" height="16" aria-hidden="true"><use href="#i-up"/></svg>Importa backup
           <input id="importFile" type="file" accept=".json" hidden>
         </label>
-        <button type="button" class="btn ghost small danger" id="resetAll"><svg><use href="#i-reset"/></svg>Ripristina</button>
+        <button type="button" class="btn ghost small danger" id="resetAll"><svg width="16" height="16" aria-hidden="true"><use href="#i-reset"/></svg>Ripristina</button>
       </div>
     </section>
   </aside>
@@ -388,12 +388,12 @@
 <a class="mobilebar" id="mobileBar" href="#results">
   <span><small>Per pezzo</small><b id="mUnit">–</b></span>
   <span><small>Totale</small><b id="mTotal">–</b></span>
-  <span class="go">Dettagli<svg><use href="#i-chev"/></svg></span>
+  <span class="go">Dettagli<svg width="16" height="16" aria-hidden="true"><use href="#i-chev"/></svg></span>
 </a>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js"></script>
-<script src="app.js"></script>
+<script src="data.js?v=4"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

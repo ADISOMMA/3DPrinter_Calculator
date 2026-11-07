@@ -15,7 +15,10 @@ Sito statico (HTML + CSS + JavaScript, nessuna dipendenza) per calcolare **quant
 - **Sconti quantità** a fasce modificabili. Compare un avviso se lo sconto porta il prezzo sotto il costo.
 - **Listino per quantità** con prezzo e margine per ogni fascia.
 - **Preventivi salvati** nel browser, testo del preventivo da copiare, backup/ripristino in JSON.
-- Tema chiaro/scuro automatico, adatto anche al telefono.
+- **Prezzo amici & famiglia**: copre solo i costi vivi più un piccolo margine, con confronto rispetto al prezzo cliente.
+- **Interfaccia**: sezioni richiudibili con riepilogo, unità di misura nei campi, ripartizione del costo con barra colorata, import trascinando il file, barra del prezzo sempre visibile su telefono.
+- **Installabile come app** (PWA): su telefono "Aggiungi a schermata Home", funziona anche offline.
+- Tema chiaro/scuro automatico.
 
 I dati restano nel `localStorage` del browser: nessun server e nessun account.
 

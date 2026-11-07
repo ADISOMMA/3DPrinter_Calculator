@@ -8,8 +8,10 @@ const LS_STATE = "c3d.state.v1";
 const LS_QUOTES = "c3d.quotes.v1";
 const LS_CUSTOM_PRINTERS = "c3d.customPrinters.v1";
 const LS_CUSTOM_FILAMENTS = "c3d.customFilaments.v1";
+const LS_OPEN = "c3d.openSections.v1";
 
 const $ = (id) => document.getElementById(id);
+const icon = (name) => `<svg aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const eur = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
 const fmt = (n) => (Number.isFinite(n) ? eur.format(n) : "–");
 const pct = (n) => (Number.isFinite(n) ? (n * 100).toLocaleString("it-IT", { maximumFractionDigits: 1 }) + "%" : "–");
@@ -111,18 +113,18 @@ function renderFilaments() {
     const div = document.createElement("div");
     div.className = "fil-row";
     div.innerHTML = `
-      <label class="fil-sel">Filamento
+      <label class="field fil-sel"><span class="lab">Filamento${filamentRows.length > 1 ? " " + (i + 1) : ""}</span>
         <select></select>
       </label>
-      <label>€/kg
-        <input type="number" min="0" step="0.5" class="fil-price">
+      <label class="field"><span class="lab">Prezzo</span>
+        <span class="ctl"><input type="number" inputmode="decimal" min="0" step="0.5" class="fil-price"><span class="u">€/kg</span></span>
       </label>
-      <label>Grammi per piatto
-        <input type="number" min="0" step="0.1" class="fil-grams">
+      <label class="field"><span class="lab">Per piatto</span>
+        <span class="ctl"><input type="number" inputmode="decimal" min="0" step="0.1" class="fil-grams"><span class="u">g</span></span>
       </label>
       <div class="fil-btns">
-        <button type="button" class="icon ghost" title="Salva come filamento personalizzato">💾</button>
-        <button type="button" class="icon ghost danger" title="Rimuovi">✕</button>
+        <button type="button" class="icon-btn" title="Salva come filamento personalizzato" aria-label="Salva come filamento personalizzato">${icon("save")}</button>
+        <button type="button" class="icon-btn danger" title="Rimuovi riga" aria-label="Rimuovi riga">${icon("x")}</button>
       </div>`;
     const sel = div.querySelector("select");
     buildGroupedOptions(sel, allFilaments(), row.id);
@@ -144,8 +146,10 @@ function renderFilaments() {
     const cur = findFilament(row.id);
     if (cur && cur.custom) {
       // filamento personalizzato selezionato: il pulsante diventa "elimina dalla lista"
-      saveBtn.textContent = "🗑";
+      saveBtn.innerHTML = icon("trash");
+      saveBtn.classList.add("danger");
       saveBtn.title = "Elimina questo filamento personalizzato dalla lista";
+      saveBtn.setAttribute("aria-label", saveBtn.title);
       saveBtn.addEventListener("click", () => {
         if (!confirm(`Eliminare "${cur.name}" dai filamenti personalizzati?`)) return;
         customFilaments = customFilaments.filter((c) => c.id !== cur.id);
@@ -191,9 +195,9 @@ function renderDiscounts() {
   discounts.forEach((d, i) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td><input type="number" min="1" step="1" value="${d.min}"></td>
-      <td><input type="number" min="0" max="90" step="0.5" value="${d.pct}"></td>
-      <td><button type="button" class="icon ghost danger" title="Rimuovi">✕</button></td>`;
+      <td><span class="ctl"><input type="number" inputmode="numeric" min="1" step="1" value="${d.min}" aria-label="Da pezzi"><span class="u">pz</span></span></td>
+      <td><span class="ctl"><input type="number" inputmode="decimal" min="0" max="90" step="0.5" value="${d.pct}" aria-label="Sconto"><span class="u">%</span></span></td>
+      <td><button type="button" class="icon-btn danger" title="Rimuovi fascia" aria-label="Rimuovi fascia">${icon("x")}</button></td>`;
     const [minI, pctI] = tr.querySelectorAll("input");
     minI.addEventListener("input", () => { d.min = Math.max(1, parseInt(minI.value) || 1); update(); });
     minI.addEventListener("change", () => { sortDiscounts(); renderDiscounts(); update(); });
@@ -216,11 +220,11 @@ function renderExtras() {
   extras.forEach((e, i) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td><input type="text" class="ex-name" placeholder="Nome oggetto"></td>
-      <td><input type="number" min="0" step="0.01" class="ex-cost"></td>
-      <td><input type="number" min="0" step="1" class="ex-qty"></td>
+      <td><input type="text" class="ex-name" placeholder="Nome oggetto" aria-label="Oggetto"></td>
+      <td><span class="ctl"><input type="number" inputmode="decimal" min="0" step="0.01" class="ex-cost" aria-label="Costo unitario"><span class="u">€</span></span></td>
+      <td><span class="ctl"><input type="number" inputmode="numeric" min="0" step="1" class="ex-qty" aria-label="Quantità per pezzo"><span class="u">×</span></span></td>
       <td class="ex-tot"></td>
-      <td><button type="button" class="icon ghost danger" title="Rimuovi">✕</button></td>`;
+      <td><button type="button" class="icon-btn danger" title="Rimuovi oggetto" aria-label="Rimuovi oggetto">${icon("x")}</button></td>`;
     const name = tr.querySelector(".ex-name"), cost = tr.querySelector(".ex-cost"), qty = tr.querySelector(".ex-qty");
     name.value = e.name; cost.value = e.cost; qty.value = e.qty;
     if (e.qty > 0) tr.classList.add("used");
@@ -349,7 +353,7 @@ function update() {
 
   // Info usura macchina, come "% del prezzo per ora" (stesso dato del foglio Excel)
   const wearH = inp.pPrice / inp.pLife + inp.pMaint;
-  $("wearInfo").textContent = `Usura macchina: ${fmt(wearH)}/ora (≈ ${(inp.pPrice > 0 ? 100 / inp.pLife : 0).toLocaleString("it-IT", { maximumFractionDigits: 3 })}% del prezzo all'ora + manutenzione)`;
+  $("wearInfo").textContent = `Usura: ${fmt(wearH)}/h · ${(inp.pPrice > 0 ? 100 / inp.pLife : 0).toLocaleString("it-IT", { maximumFractionDigits: 3 })}% del prezzo all'ora + manutenzione`;
 
   // Totali riga componenti
   document.querySelectorAll("#extras tr").forEach((tr, i) => {
@@ -358,7 +362,12 @@ function update() {
   });
 
   // Big numbers
-  $("rUnit").textContent = fmt(q.unitGross);
+  setNum("rUnit", fmt(q.unitGross));
+  setNum("rTotal", fmt(q.totalGross));
+  $("mUnit").textContent = fmt(q.unitGross);
+  $("mTotal").textContent = fmt(q.totalGross);
+  $("modeClient").setAttribute("aria-pressed", String(!inp.friends));
+  $("modeFriend").setAttribute("aria-pressed", String(inp.friends));
   $("friendBox").classList.toggle("on", inp.friends);
   document.querySelector(".result-card").classList.toggle("friends", inp.friends);
   let normalQ = null;
@@ -367,27 +376,34 @@ function update() {
     normalQ = quote(n, unitCost(n), n.qty);
   }
   $("rUnitNote").textContent = inp.friends
-    ? `👨‍👩‍👦 prezzo amici · normale ${fmt(normalQ.unitGross)}`
+    ? `prezzo amici · cliente ${fmt(normalQ.unitGross)}`
     : q.disc > 0
     ? `listino ${fmt(roundPrice(q.listGross, inp.rounding))} − ${pct(q.disc)} sconto`
     : (inp.vat > 0 ? "IVA inclusa" : "");
-  $("rTotal").textContent = fmt(q.totalGross);
   $("rTotalNote").textContent = `${q.qty} pz · ${q.plates} piatt${q.plates === 1 ? "o" : "i"} · ${formatHours(q.machineHours)} macchina`;
 
   // Warnings
   const w = [];
-  if (q.belowCost) w.push(`⚠️ Con lo sconto del ${pct(q.disc)} il prezzo scende sotto il costo di produzione (${fmt(uc.total)}/pz). Riduci lo sconto o aumenta il ricarico.`);
-  if (inp.friends) w.push(`👨‍👩‍👦 Prezzo amici attivo: ${inp.laborRate ? "costi + tuo tempo" : "solo costi vivi (tempo regalato)"} + ${pct(inp.markup)}. Il prezzo normale sarebbe ${fmt(normalQ.totalGross)}: l'amico risparmia ${fmt(normalQ.totalGross - q.totalGross)}.`);
-  else if (q.margin < 0.15 && q.revenueNet > 0) w.push(`⚠️ Margine basso (${pct(q.margin)}): ogni imprevisto ti porta in perdita.`);
-  if (q.minApplied) w.push(`ℹ️ Applicato il prezzo minimo d'ordine (${fmt(inp.minOrder)}).`);
-  if (inp.qty % inp.perPlate !== 0) w.push(`ℹ️ ${inp.qty} pezzi non riempiono esattamente i piatti (${inp.perPlate}/piatto): l'ultimo piatto sarà parziale.`);
-  if (!inp.filaments.some((f) => f.grams > 0)) w.push("ℹ️ Inserisci i grammi di filamento.");
-  if (inp.hours <= 0) w.push("ℹ️ Inserisci il tempo di stampa.");
-  $("warnings").innerHTML = w.map((t) => `<p class="warn">${t}</p>`).join("");
+  const W = (type, text) => w.push({ type, text });
+  if (q.belowCost) W("bad", `Con lo sconto del ${pct(q.disc)} il prezzo scende sotto il costo di produzione (${fmt(uc.total)}/pz). Riduci lo sconto o aumenta il ricarico.`);
+  if (inp.friends) W("friend", `Prezzo amici: ${inp.laborRate ? "costi + tuo tempo" : "solo costi vivi (tempo regalato)"} + ${pct(inp.markup)}. Il prezzo normale sarebbe ${fmt(normalQ.totalGross)}: l'amico risparmia ${fmt(normalQ.totalGross - q.totalGross)}.`);
+  else if (q.margin < 0.15 && q.revenueNet > 0) W("warn", `Margine basso (${pct(q.margin)}): ogni imprevisto ti porta in perdita.`);
+  if (q.minApplied) W("info", `Applicato il prezzo minimo d'ordine (${fmt(inp.minOrder)}).`);
+  if (inp.qty % inp.perPlate !== 0) W("info", `${inp.qty} pezzi non riempiono esattamente i piatti (${inp.perPlate}/piatto): l'ultimo piatto sarà parziale.`);
+  if (!inp.filaments.some((f) => f.grams > 0)) W("info", "Inserisci i grammi di filamento.");
+  if (inp.hours <= 0) W("info", "Inserisci il tempo di stampa.");
+  const ICONS = { bad: "alert", warn: "alert", info: "info", friend: "heart" };
+  $("warnings").innerHTML = w.map((a) => `<p class="alert ${a.type}">${icon(ICONS[a.type])}<span>${a.text}</span></p>`).join("");
 
   // Breakdown
-  const rows = uc.items.filter((i) => i.v > 0.00049).map((i) => `
-    <tr><td>${i.k}</td><td class="bar"><span style="width:${uc.total > 0 ? (i.v / uc.total * 100).toFixed(1) : 0}%"></span></td><td>${fmt(i.v)}</td></tr>`);
+  // Ogni voce ha un colore fisso (segue la voce, non la posizione): --s1 … --s7
+  const parts = uc.items.map((it, idx) => ({ ...it, color: `var(--s${idx + 1})` })).filter((i) => i.v > 0.00049);
+  const share = (v) => (uc.total > 0 ? v / uc.total : 0);
+  $("costBar").innerHTML = parts.map((p) =>
+    `<span style="flex:${share(p.v).toFixed(4)} 1 0;background:${p.color}" title="${p.k}: ${fmt(p.v)} (${pct(share(p.v))})"></span>`).join("");
+  $("costBar").setAttribute("aria-label", "Ripartizione del costo per pezzo: " + parts.map((p) => `${p.k} ${pct(share(p.v))}`).join(", "));
+  const rows = parts.map((p) => `
+    <tr><td><span class="dot" style="background:${p.color}"></span>${p.k}</td><td class="share">${pct(share(p.v))}</td><td>${fmt(p.v)}</td></tr>`);
   rows.push(`<tr class="tot"><td>Costo di produzione</td><td></td><td>${fmt(uc.total)}</td></tr>`);
   rows.push(`<tr class="muted"><td colspan="2">Filamento per pezzo</td><td>${uc.gramsPerPiece.toLocaleString("it-IT", { maximumFractionDigits: 1 })} g</td></tr>`);
   $("breakdown").innerHTML = rows.join("");
@@ -411,7 +427,41 @@ function update() {
     return `<tr class="${cls}${t.belowCost ? " loss" : ""}"><td>${n}</td><td>${t.disc ? pct(t.disc) : "–"}</td><td>${fmt(t.unitGross)}</td><td>${fmt(t.totalGross)}</td><td>${pct(t.margin)}</td></tr>`;
   }).join("");
 
+  updateChips(inp);
   saveState();
+}
+
+function setNum(id, text) {
+  const el = $(id);
+  if (el.textContent === text) return;
+  el.textContent = text;
+  el.classList.remove("bump");
+  void el.offsetWidth; // riavvia l'animazione
+  el.classList.add("bump");
+}
+
+/** Riepilogo compatto mostrato sulle sezioni chiuse. */
+function updateChips(inp) {
+  const p = findPrinter($("printerSel").value);
+  const grams = inp.filaments.reduce((s, f) => s + (f.grams || 0), 0);
+  const fil = inp.filaments.map((f) => findFilament(f.id)).filter(Boolean);
+  const usedExtras = extras.filter((e) => e.qty > 0);
+  const n = (v, d = 2) => v.toLocaleString("it-IT", { maximumFractionDigits: d });
+  const chips = {
+    "sum-job": `${inp.qty} pz · ${inp.perPlate}/piatto · ${formatHours(inp.hours)}`,
+    "sum-printer": `${p ? p.name : ""} · ${n(inp.pPower, 0)} W · ${fmt(inp.pPrice / inp.pLife + inp.pMaint)}/h`,
+    "sum-fil": `${fil.length > 1 ? fil.length + " filamenti" : fil[0] ? fil[0].brand + " " + fil[0].name : ""} · ${n(grams, 1)} g`,
+    "sum-ops": `${n(inp.kwh)} €/kWh · fallite ${n(inp.fail * 100, 1)}% · ${n(num("laborRate"))} €/h`,
+    "sum-extras": usedExtras.length ? `${usedExtras.length} oggett${usedExtras.length > 1 ? "i" : "o"} · ${fmt(inp.extraPiece)}/pz` : "nessuno",
+    "sum-price": `ricarico ${n(num("markup"), 1)}%${num("feePct") ? ` · comm. ${n(num("feePct"), 1)}%` : ""}${num("vat") ? ` · IVA ${n(num("vat"), 0)}%` : ""}`,
+    "sum-disc": discounts.filter((d) => d.pct > 0).map((d) => `${d.min}+ −${n(d.pct, 1)}%`).join(" · ") || "nessuno",
+  };
+  for (const [id, text] of Object.entries(chips)) $(id).textContent = text;
+}
+
+function setFriendMode(on) {
+  $("friendMode").checked = on;
+  update();
 }
 
 function formatHours(h) {
@@ -456,18 +506,18 @@ function saveState() {
 function renderQuotes() {
   const list = loadJSON(LS_QUOTES, []);
   const ul = $("quotes");
-  if (!list.length) { ul.innerHTML = `<li class="muted">Nessun preventivo salvato.</li>`; return; }
+  if (!list.length) { ul.innerHTML = `<li class="empty">Nessun preventivo salvato. Compila i dati e premi “Salva preventivo”.</li>`; return; }
   ul.innerHTML = "";
   list.forEach((q, i) => {
     const li = document.createElement("li");
     li.innerHTML = `
       <div><b></b><small></small></div>
       <div class="q-btns">
-        <button type="button" class="ghost">Apri</button>
-        <button type="button" class="icon ghost danger" title="Elimina">✕</button>
+        <button type="button" class="btn ghost small">Apri</button>
+        <button type="button" class="icon-btn danger" title="Elimina preventivo" aria-label="Elimina preventivo">${icon("trash")}</button>
       </div>`;
     li.querySelector("b").textContent = q.name;
-    li.querySelector("small").textContent = ` ${new Date(q.date).toLocaleDateString("it-IT")} · ${q.qty} pz · ${fmt(q.total)}`;
+    li.querySelector("small").textContent = `${new Date(q.date).toLocaleDateString("it-IT")} · ${q.qty} pz · ${fmt(q.total)}`;
     const [openB, delB] = li.querySelectorAll("button");
     openB.addEventListener("click", () => { setState(q.state); update(); toast(`Aperto "${q.name}"`); window.scrollTo({ top: 0, behavior: "smooth" }); });
     delB.addEventListener("click", () => {
@@ -492,7 +542,7 @@ function quoteText() {
   const { inp, uc, q } = lastResult;
   const name = $("jobName").value.trim();
   const lines = [
-    `Preventivo stampa 3D${name ? " – " + name : ""}${inp.friends ? " (prezzo amici 😉)" : ""}`,
+    `Preventivo stampa 3D${name ? " – " + name : ""}${inp.friends ? " (prezzo amici)" : ""}`,
     `Data: ${new Date().toLocaleDateString("it-IT")}`,
     ``,
     `Quantità: ${q.qty} pz`,
@@ -700,10 +750,12 @@ async function importGcode(file) {
       msgs.push(`${grams.reduce((a, b) => a + b, 0).toFixed(1)} g${res.approx ? " (stimati da metri)" : ""} su ${grams.length} filament${grams.length > 1 ? "i" : "o"}`);
     }
     if (res.plates > 1) msgs.push(`somma di ${res.plates} piatti`);
-    info.textContent = msgs.length ? `✅ Importato: ${msgs.join(", ")}. Imposta i pezzi per piatto.` : "⚠️ Nessun dato trovato nel file.";
+    info.textContent = msgs.length ? `Importato ${file.name}: ${msgs.join(", ")}. Controlla i pezzi per piatto.` : "Nessun dato di tempo o filamento trovato nel file.";
+    $("dropzone").classList.toggle("ok", msgs.length > 0);
     update();
   } catch (e) {
-    info.textContent = "⚠️ Errore: " + e.message;
+    info.textContent = "Errore: " + e.message;
+    $("dropzone").classList.remove("ok");
   }
 }
 
@@ -772,6 +824,34 @@ function init() {
     localStorage.removeItem(LS_STATE);
     location.reload();
   });
+
+  // Selettore Cliente / Amici
+  $("modeClient").addEventListener("click", () => setFriendMode(false));
+  $("modeFriend").addEventListener("click", () => setFriendMode(true));
+
+  // Sezioni aperte/chiuse ricordate
+  const openState = loadJSON(LS_OPEN, {});
+  document.querySelectorAll("details.step").forEach((d) => {
+    if (d.id in openState) d.open = openState[d.id];
+    d.addEventListener("toggle", () => { openState[d.id] = d.open; saveJSON(LS_OPEN, openState); });
+  });
+
+  // Trascina e rilascia il file dello slicer
+  const dz = $("dropzone");
+  ["dragenter", "dragover"].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add("drag"); }));
+  ["dragleave", "drop"].forEach((ev) => dz.addEventListener(ev, () => dz.classList.remove("drag")));
+  dz.addEventListener("drop", (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) importGcode(f); });
+
+  // Barra prezzo mobile: nascosta quando il pannello risultati è visibile
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([en]) => $("mobileBar").classList.toggle("away", en.isIntersecting), { threshold: 0.05 })
+      .observe(document.querySelector(".result-card"));
+  }
+
+  // Uso offline e installabile (solo online, non da file locale)
+  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
 
   renderQuotes();
   update();

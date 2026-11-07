@@ -2,262 +2,351 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>3DPrinter Calculator – Calcolatore Costi Stampa 3D</title>
-  <meta name="description" content="Calcola costo reale e prezzo di vendita delle stampe 3D: filamento, energia, ammortamento, manodopera, fallimenti, commissioni e sconti quantità.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>3DPrinter Calculator</title>
+  <meta name="description" content="Calcola costo reale e prezzo di vendita delle stampe 3D: filamento, energia, usura stampante, manodopera, fallimenti, commissioni, sconti quantità e prezzo amici.">
+  <meta name="theme-color" content="#13262b">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta property="og:title" content="3DPrinter Calculator">
+  <meta property="og:description" content="Quanto costa davvero una stampa 3D e a quanto venderla.">
+  <meta property="og:image" content="https://adisomma.github.io/3DPrinter_Calculator/icon-512.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,650;12..96,800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <h1>🧊 Calcolatore Costi Stampa 3D</h1>
-  <p class="sub">Costo reale e prezzo di vendita di un pezzo stampato. I dati restano salvati nel tuo browser.</p>
+
+<!-- Icone (sprite SVG) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z M8 4v5h7V4 M8 20v-6h8v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M9 9h11v11H9z M5 15H4V4h11v1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 15V4M7 9l5-5 5 5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z M12 10v5 M12 18h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6 M12 7.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z M7.5 8.5h.01" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <img class="logo" src="favicon.svg" alt="" width="48" height="48">
+    <div>
+      <h1>3DPrinter Calculator</h1>
+      <p class="tagline">Quanto ti costa davvero una stampa, e a quanto venderla.</p>
+    </div>
+  </div>
+  <div class="layers" aria-hidden="true"></div>
 </header>
 
 <main class="layout">
   <div class="forms">
 
-    <!-- 1. LAVORO -->
-    <section class="card">
-      <h2>1 · Lavoro</h2>
-      <div class="grid">
-        <label class="span2">Nome lavoro / cliente
-          <input id="jobName" type="text" placeholder="es. Portachiavi logo – Mario">
-        </label>
-        <label>Quantità ordinata (pezzi)
-          <input id="qty" type="number" min="1" step="1" value="1">
-        </label>
-        <label>Pezzi per piatto
-          <input id="perPlate" type="number" min="1" step="1" value="1">
-          <small>Quanti pezzi escono da una stampa</small>
-        </label>
-        <label>Tempo stampa per piatto – ore
-          <input id="hours" type="number" min="0" step="1" value="2">
-        </label>
-        <label>… minuti
-          <input id="minutes" type="number" min="0" max="59" step="1" value="0">
-        </label>
-      </div>
-      <div class="gcode">
-        <label class="file-btn">📄 Importa da G-code
-          <input id="gcodeFile" type="file" accept=".gcode,.gco,.g,.3mf,.txt">
-        </label>
-        <small id="gcodeInfo">Legge tempo e grammi da Bambu Studio / OrcaSlicer (.gcode o .gcode.3mf slicato), PrusaSlicer, Cura.</small>
-      </div>
-    </section>
-
-    <!-- 2. STAMPANTE -->
-    <section class="card">
-      <h2>2 · Stampante</h2>
-      <div class="grid">
-        <label class="span2">Modello
-          <select id="printerSel"></select>
-        </label>
-        <label>Prezzo d'acquisto (€)
-          <input id="pPrice" type="number" min="0" step="1">
-          <small>Includi AMS/upgrade se li usi</small>
-        </label>
-        <label>Consumo medio in stampa (W)
-          <input id="pPower" type="number" min="0" step="1">
-        </label>
-        <label>Vita utile stimata (ore)
-          <input id="pLife" type="number" min="1" step="100">
-        </label>
-        <label>Manutenzione (€/ora)
-          <input id="pMaint" type="number" min="0" step="0.01">
-          <small>Ugelli, piatti, cinghie, ricambi</small>
-        </label>
-      </div>
-      <p class="hint" id="wearInfo"></p>
-      <div class="row-actions">
-        <button type="button" class="ghost" id="savePrinter">💾 Salva come stampante personalizzata</button>
-        <button type="button" class="ghost danger hidden" id="delPrinter">🗑 Elimina personalizzata</button>
-      </div>
-    </section>
-
-    <!-- 3. FILAMENTI -->
-    <section class="card">
-      <h2>3 · Filamenti</h2>
-      <p class="hint">Aggiungi più righe per stampe multicolore/multimateriale. Grammi per <b>piatto</b> (come indicati dallo slicer).</p>
-      <div id="filaments"></div>
-      <div class="row-actions">
-        <button type="button" class="ghost" id="addFil">➕ Aggiungi filamento</button>
-      </div>
-      <div class="grid">
-        <label>Spreco extra per piatto (g)
-          <input id="waste" type="number" min="0" step="1" value="0">
-          <small>Spurgo AMS, prime tower, brim se non inclusi</small>
-        </label>
-      </div>
-    </section>
-
-    <!-- 4. COSTI OPERATIVI -->
-    <section class="card">
-      <h2>4 · Costi operativi</h2>
-      <div class="grid">
-        <label>Energia elettrica (€/kWh)
-          <input id="kwh" type="number" min="0" step="0.01" value="0.28">
-          <small>Vedi la tua bolletta (tutto incluso)</small>
-        </label>
-        <label>Tasso fallimenti (%)
-          <input id="failRate" type="number" min="0" max="90" step="1" value="5">
-          <small>Stampe da rifare su 100</small>
-        </label>
-        <label>Tua tariffa oraria (€/h)
-          <input id="laborRate" type="number" min="0" step="0.5" value="15">
-        </label>
-        <label>Preparazione per piatto (min)
-          <input id="prepMin" type="number" min="0" step="1" value="10">
-          <small>Slicing, avvio, pulizia piatto, rimozione</small>
-        </label>
-        <label>Post‑produzione per pezzo (min)
-          <input id="postMin" type="number" min="0" step="1" value="5">
-          <small>Rimozione supporti, carteggiatura, verniciatura</small>
-        </label>
-        <label>Costi fissi per ordine (€)
-          <input id="orderFixed" type="number" min="0" step="0.01" value="0">
-          <small>Imballaggio, scatola, etichette</small>
-        </label>
-        <label>Progettazione / modellazione (€)
-          <input id="designFee" type="number" min="0" step="0.5" value="0">
-          <small>Una tantum, sull'ordine</small>
-        </label>
-        <label>Supplemento urgenza (€)
-          <input id="rushFee" type="number" min="0" step="0.5" value="0">
-          <small>Consegna rapida / precedenza in coda</small>
-        </label>
-      </div>
-    </section>
-
-    <!-- 5. COMPONENTI AGGIUNTIVI -->
-    <section class="card">
-      <h2>5 · Componenti aggiuntivi</h2>
-      <p class="hint">Magneti, LED, pulsanti, viti, inserti… Quantità <b>per pezzo</b>. Le righe a 0 vengono ignorate.</p>
-      <table class="extras-table">
-        <thead><tr><th>Oggetto</th><th>€/unità</th><th>Q.tà per pezzo</th><th>Totale</th><th></th></tr></thead>
-        <tbody id="extras"></tbody>
-      </table>
-      <div class="row-actions">
-        <button type="button" class="ghost" id="addExtra">➕ Aggiungi oggetto</button>
-      </div>
-    </section>
-
-    <!-- 6. PREZZO -->
-    <section class="card">
-      <h2>6 · Prezzo di vendita</h2>
-      <div class="friend-box" id="friendBox">
-        <label class="check">
-          <input type="checkbox" id="friendMode">
-          <span>👨‍👩‍👦 <b>Prezzo amici &amp; famiglia</b><small>Copri le spese e guadagni il minimo: niente ricarico pieno, commissioni, urgenza o sconti quantità.</small></span>
-        </label>
-        <div class="grid friend-opts">
-          <label>Margine amici (%)
-            <input id="friendMarkup" type="number" min="0" step="5" value="10">
-            <small>0 = prezzo di costo puro</small>
+    <!-- 01 LAVORO -->
+    <details class="step" id="st-job" open>
+      <summary>
+        <span class="num">01</span><span class="ttl">Lavoro</span>
+        <span class="chip" id="sum-job"></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="step-body">
+        <div class="grid">
+          <label class="field span2"><span class="lab">Nome lavoro o cliente</span>
+            <input id="jobName" type="text" placeholder="es. Portachiavi logo, Mario" autocomplete="off">
           </label>
-          <label class="check small-check">
-            <input type="checkbox" id="friendLabor">
-            <span>Fai pagare anche il mio tempo<small>Preparazione, rifinitura e progettazione</small></span>
+          <label class="field"><span class="lab">Quantità ordinata</span>
+            <span class="ctl"><input id="qty" type="number" inputmode="numeric" min="1" step="1" value="1"><span class="u">pz</span></span>
+          </label>
+          <label class="field"><span class="lab">Pezzi per piatto</span>
+            <span class="ctl"><input id="perPlate" type="number" inputmode="numeric" min="1" step="1" value="1"><span class="u">pz</span></span>
+            <small>Quanti pezzi escono da una stampa</small>
+          </label>
+          <label class="field"><span class="lab">Tempo per piatto</span>
+            <span class="ctl"><input id="hours" type="number" inputmode="numeric" min="0" step="1" value="2"><span class="u">h</span></span>
+          </label>
+          <label class="field"><span class="lab">&nbsp;</span>
+            <span class="ctl"><input id="minutes" type="number" inputmode="numeric" min="0" max="59" step="1" value="0" aria-label="Minuti"><span class="u">min</span></span>
+            <small>Usa il tempo <b>totale</b> dello slicer</small>
+          </label>
+        </div>
+        <label class="dropzone" id="dropzone">
+          <input id="gcodeFile" type="file" accept=".gcode,.gco,.g,.3mf,.txt">
+          <svg class="ico"><use href="#i-file"/></svg>
+          <span><b>Importa dallo slicer</b> (trascina qui o clicca)<small id="gcodeInfo">G-code o .gcode.3mf da Bambu Studio, OrcaSlicer, PrusaSlicer, Cura: compila tempo e grammi.</small></span>
+        </label>
+      </div>
+    </details>
+
+    <!-- 02 STAMPANTE -->
+    <details class="step" id="st-printer" open>
+      <summary>
+        <span class="num">02</span><span class="ttl">Stampante</span>
+        <span class="chip" id="sum-printer"></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="step-body">
+        <div class="grid">
+          <label class="field span2"><span class="lab">Modello</span>
+            <select id="printerSel"></select>
+          </label>
+          <label class="field"><span class="lab">Prezzo d'acquisto</span>
+            <span class="ctl"><input id="pPrice" type="number" inputmode="decimal" min="0" step="1"><span class="u">€</span></span>
+            <small>Includi AMS e upgrade</small>
+          </label>
+          <label class="field"><span class="lab">Consumo medio</span>
+            <span class="ctl"><input id="pPower" type="number" inputmode="decimal" min="0" step="1"><span class="u">W</span></span>
+            <small>In stampa, non il picco</small>
+          </label>
+          <label class="field"><span class="lab">Vita utile stimata</span>
+            <span class="ctl"><input id="pLife" type="number" inputmode="numeric" min="1" step="100"><span class="u">h</span></span>
+          </label>
+          <label class="field"><span class="lab">Manutenzione</span>
+            <span class="ctl"><input id="pMaint" type="number" inputmode="decimal" min="0" step="0.01"><span class="u">€/h</span></span>
+            <small>Ugelli, piatti, cinghie</small>
+          </label>
+        </div>
+        <p class="hint mono" id="wearInfo"></p>
+        <div class="actions">
+          <button type="button" class="btn ghost" id="savePrinter"><svg><use href="#i-save"/></svg>Salva come personalizzata</button>
+          <button type="button" class="btn ghost danger hidden" id="delPrinter"><svg><use href="#i-trash"/></svg>Elimina personalizzata</button>
+        </div>
+      </div>
+    </details>
+
+    <!-- 03 FILAMENTI -->
+    <details class="step" id="st-fil" open>
+      <summary>
+        <span class="num">03</span><span class="ttl">Filamenti</span>
+        <span class="chip" id="sum-fil"></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="step-body">
+        <p class="hint">Una riga per ogni filamento usato (multicolore e AMS). Grammi per <b>piatto</b>, come li indica lo slicer.</p>
+        <div id="filaments" class="fil-list"></div>
+        <div class="actions">
+          <button type="button" class="btn ghost" id="addFil"><svg><use href="#i-plus"/></svg>Aggiungi filamento</button>
+        </div>
+        <div class="grid sep">
+          <label class="field"><span class="lab">Spreco extra per piatto</span>
+            <span class="ctl"><input id="waste" type="number" inputmode="decimal" min="0" step="1" value="0"><span class="u">g</span></span>
+            <small>Spurgo, prime tower, brim se non inclusi</small>
           </label>
         </div>
       </div>
-      <div class="grid">
-        <label>Ricarico sul costo (%)
-          <input id="markup" type="number" min="0" step="5" value="60">
-          <small>Hobby 30–60%, marketplace 60–150%</small>
-        </label>
-        <label>Commissione piattaforma (%)
-          <input id="feePct" type="number" min="0" max="80" step="0.5" value="0">
-          <small>Etsy ≈ 6,5% + 4% pagamento, Vinted 0%</small>
-        </label>
-        <label>Commissione fissa per ordine (€)
-          <input id="feeFixed" type="number" min="0" step="0.01" value="0">
-        </label>
-        <label>IVA (%)
-          <input id="vat" type="number" min="0" max="50" step="1" value="0">
-          <small>0 se privato o forfettario, 22 con P.IVA ordinaria</small>
-        </label>
-        <label>Prezzo minimo per ordine (€)
-          <input id="minOrder" type="number" min="0" step="0.5" value="0">
-          <small>Sotto questa cifra non conviene accendere la stampante</small>
-        </label>
-        <label>Arrotondamento prezzo unitario
-          <select id="rounding">
-            <option value="0">Nessuno (centesimi)</option>
-            <option value="0.1">A 0,10 €</option>
-            <option value="0.5" selected>A 0,50 €</option>
-            <option value="1">All'euro</option>
-            <option value="psy">Prezzo psicologico (x,90)</option>
-          </select>
-        </label>
-      </div>
-    </section>
+    </details>
 
-    <!-- 6. SCONTI -->
-    <section class="card">
-      <h2>7 · Sconti quantità</h2>
-      <p class="hint">Lo sconto si applica sul prezzo unitario in base ai pezzi ordinati. Non scende mai sotto il costo: se succede vedrai un avviso.</p>
-      <table class="disc-table">
-        <thead><tr><th>Da (pezzi)</th><th>Sconto %</th><th></th></tr></thead>
-        <tbody id="discounts"></tbody>
-      </table>
-      <div class="row-actions">
-        <button type="button" class="ghost" id="addDisc">➕ Aggiungi fascia</button>
-        <button type="button" class="ghost" id="resetDisc">↺ Fasce predefinite</button>
+    <!-- 04 COSTI OPERATIVI -->
+    <details class="step" id="st-ops" open>
+      <summary>
+        <span class="num">04</span><span class="ttl">Costi operativi</span>
+        <span class="chip" id="sum-ops"></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="step-body">
+        <div class="grid">
+          <label class="field"><span class="lab">Energia elettrica</span>
+            <span class="ctl"><input id="kwh" type="number" inputmode="decimal" min="0" step="0.01" value="0.28"><span class="u">€/kWh</span></span>
+            <small>Dalla bolletta, tutto incluso</small>
+          </label>
+          <label class="field"><span class="lab">Stampe fallite</span>
+            <span class="ctl"><input id="failRate" type="number" inputmode="decimal" min="0" max="90" step="1" value="5"><span class="u">%</span></span>
+            <small>Quante su 100 da rifare</small>
+          </label>
+          <label class="field"><span class="lab">Tua tariffa oraria</span>
+            <span class="ctl"><input id="laborRate" type="number" inputmode="decimal" min="0" step="0.5" value="15"><span class="u">€/h</span></span>
+          </label>
+          <label class="field"><span class="lab">Preparazione per piatto</span>
+            <span class="ctl"><input id="prepMin" type="number" inputmode="numeric" min="0" step="1" value="10"><span class="u">min</span></span>
+            <small>Slicing, avvio, pulizia, rimozione</small>
+          </label>
+          <label class="field"><span class="lab">Rifinitura per pezzo</span>
+            <span class="ctl"><input id="postMin" type="number" inputmode="numeric" min="0" step="1" value="5"><span class="u">min</span></span>
+            <small>Supporti, carteggiatura, colore</small>
+          </label>
+          <label class="field"><span class="lab">Imballaggio per ordine</span>
+            <span class="ctl"><input id="orderFixed" type="number" inputmode="decimal" min="0" step="0.01" value="0"><span class="u">€</span></span>
+            <small>Scatola, etichette</small>
+          </label>
+          <label class="field"><span class="lab">Progettazione</span>
+            <span class="ctl"><input id="designFee" type="number" inputmode="decimal" min="0" step="0.5" value="0"><span class="u">€</span></span>
+            <small>Una tantum sull'ordine</small>
+          </label>
+          <label class="field"><span class="lab">Supplemento urgenza</span>
+            <span class="ctl"><input id="rushFee" type="number" inputmode="decimal" min="0" step="0.5" value="0"><span class="u">€</span></span>
+            <small>Precedenza in coda</small>
+          </label>
+        </div>
       </div>
-    </section>
+    </details>
 
+    <!-- 05 COMPONENTI -->
+    <details class="step" id="st-extras">
+      <summary>
+        <span class="num">05</span><span class="ttl">Componenti aggiuntivi</span>
+        <span class="chip" id="sum-extras"></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="step-body">
+        <p class="hint">Magneti, LED, pulsanti, viti, inserti. Quantità <b>per pezzo</b>: le righe a 0 non contano.</p>
+        <div class="table-wrap">
+          <table class="extras-table">
+            <thead><tr><th>Oggetto</th><th>€/unità</th><th>Per pezzo</th><th class="r">Totale</th><th></th></tr></thead>
+            <tbody id="extras"></tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn ghost" id="addExtra"><svg><use href="#i-plus"/></svg>Aggiungi oggetto</button>
+        </div>
+      </div>
+    </details>
+
+    <!-- 06 PREZZO -->
+    <details class="step" id="st-price" open>
+      <summary>
+        <span class="num">06</span><span class="ttl">Prezzo di vendita</span>
+        <span class="chip" id="sum-price"></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="step-body">
+        <div class="grid">
+          <label class="field"><span class="lab">Ricarico sul costo</span>
+            <span class="ctl"><input id="markup" type="number" inputmode="decimal" min="0" step="5" value="60"><span class="u">%</span></span>
+            <small>Hobby 30–60%, marketplace 60–150%</small>
+          </label>
+          <label class="field"><span class="lab">Commissione piattaforma</span>
+            <span class="ctl"><input id="feePct" type="number" inputmode="decimal" min="0" max="80" step="0.5" value="0"><span class="u">%</span></span>
+            <small>Etsy circa 6,5% + 4% pagamento</small>
+          </label>
+          <label class="field"><span class="lab">Commissione fissa</span>
+            <span class="ctl"><input id="feeFixed" type="number" inputmode="decimal" min="0" step="0.01" value="0"><span class="u">€</span></span>
+            <small>Per ordine</small>
+          </label>
+          <label class="field"><span class="lab">IVA</span>
+            <span class="ctl"><input id="vat" type="number" inputmode="decimal" min="0" max="50" step="1" value="0"><span class="u">%</span></span>
+            <small>0 da privato o forfettario</small>
+          </label>
+          <label class="field"><span class="lab">Minimo per ordine</span>
+            <span class="ctl"><input id="minOrder" type="number" inputmode="decimal" min="0" step="0.5" value="0"><span class="u">€</span></span>
+            <small>Sotto non conviene accendere</small>
+          </label>
+          <label class="field"><span class="lab">Arrotondamento</span>
+            <select id="rounding">
+              <option value="0">Nessuno</option>
+              <option value="0.1">A 0,10 €</option>
+              <option value="0.5" selected>A 0,50 €</option>
+              <option value="1">All'euro</option>
+              <option value="psy">Prezzo x,90</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </details>
+
+    <!-- 07 SCONTI -->
+    <details class="step" id="st-disc">
+      <summary>
+        <span class="num">07</span><span class="ttl">Sconti quantità</span>
+        <span class="chip" id="sum-disc"></span>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="step-body">
+        <p class="hint">Sconto sul prezzo unitario in base ai pezzi ordinati. Se uno sconto ti porta sotto costo compare un avviso.</p>
+        <table class="disc-table">
+          <thead><tr><th>Da pezzi</th><th>Sconto</th><th></th></tr></thead>
+          <tbody id="discounts"></tbody>
+        </table>
+        <div class="actions">
+          <button type="button" class="btn ghost" id="addDisc"><svg><use href="#i-plus"/></svg>Aggiungi fascia</button>
+          <button type="button" class="btn ghost" id="resetDisc"><svg><use href="#i-reset"/></svg>Fasce predefinite</button>
+        </div>
+      </div>
+    </details>
   </div>
 
   <!-- RISULTATI -->
-  <aside class="results">
-    <section class="card result-card">
-      <h2>Risultato</h2>
-      <div class="big">
-        <div>
+  <aside class="results" id="results">
+    <section class="panel result-card">
+      <div class="mode" role="group" aria-label="Tipo di prezzo">
+        <button type="button" id="modeClient" aria-pressed="true"><svg><use href="#i-tag"/></svg>Cliente</button>
+        <button type="button" id="modeFriend" aria-pressed="false"><svg><use href="#i-heart"/></svg>Amici &amp; famiglia</button>
+      </div>
+
+      <div class="friend-box" id="friendBox">
+        <input type="checkbox" id="friendMode" hidden>
+        <p class="friend-lead">Copri le spese e guadagni il minimo. Niente ricarico pieno, commissioni, urgenza o sconti quantità.</p>
+        <div class="friend-opts">
+          <label class="field"><span class="lab">Margine amici</span>
+            <span class="ctl"><input id="friendMarkup" type="number" inputmode="decimal" min="0" step="5" value="10"><span class="u">%</span></span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="friendLabor">
+            <span class="track" aria-hidden="true"></span>
+            <span>Fai pagare il mio tempo</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="hero-main">
           <span class="lbl">Prezzo per pezzo</span>
           <span class="val" id="rUnit">–</span>
           <span class="note" id="rUnitNote"></span>
         </div>
-        <div>
+        <div class="hero-side">
           <span class="lbl">Totale ordine</span>
-          <span class="val accent" id="rTotal">–</span>
+          <span class="val2" id="rTotal">–</span>
           <span class="note" id="rTotalNote"></span>
         </div>
       </div>
-      <div id="warnings"></div>
 
-      <h3>Costo per pezzo</h3>
+      <div id="warnings" class="alerts"></div>
+
+      <h3>Dove vanno i soldi, per pezzo</h3>
+      <div class="costbar" id="costBar" role="img" aria-label="Ripartizione del costo per pezzo"></div>
       <table class="breakdown">
         <tbody id="breakdown"></tbody>
       </table>
 
       <h3>Riepilogo ordine</h3>
-      <table class="breakdown">
+      <table class="breakdown summary">
         <tbody id="summary"></tbody>
       </table>
 
       <h3>Listino per quantità</h3>
-      <table class="tiers">
-        <thead><tr><th>Pezzi</th><th>Sconto</th><th>€/pezzo</th><th>Totale</th><th>Margine</th></tr></thead>
-        <tbody id="tierTable"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="tiers">
+          <thead><tr><th>Pezzi</th><th>Sconto</th><th>€/pz</th><th>Totale</th><th>Margine</th></tr></thead>
+          <tbody id="tierTable"></tbody>
+        </table>
+      </div>
 
-      <div class="row-actions">
-        <button type="button" id="saveQuote">💾 Salva preventivo</button>
-        <button type="button" class="ghost" id="copyQuote">📋 Copia testo</button>
+      <div class="actions">
+        <button type="button" class="btn" id="saveQuote"><svg><use href="#i-save"/></svg>Salva preventivo</button>
+        <button type="button" class="btn ghost" id="copyQuote"><svg><use href="#i-copy"/></svg>Copia testo</button>
       </div>
     </section>
 
-    <section class="card">
-      <h2>Preventivi salvati</h2>
+    <section class="panel">
+      <h2 class="panel-title">Preventivi salvati</h2>
       <ul id="quotes" class="quotes"></ul>
-      <div class="row-actions">
-        <button type="button" class="ghost" id="exportBtn">⬇ Esporta backup</button>
-        <label class="ghost file-btn">⬆ Importa backup
-          <input id="importFile" type="file" accept=".json">
+      <div class="actions">
+        <button type="button" class="btn ghost small" id="exportBtn"><svg><use href="#i-down"/></svg>Esporta backup</button>
+        <label class="btn ghost small"><svg><use href="#i-up"/></svg>Importa backup
+          <input id="importFile" type="file" accept=".json" hidden>
         </label>
-        <button type="button" class="ghost danger" id="resetAll">Ripristina tutto</button>
+        <button type="button" class="btn ghost small danger" id="resetAll"><svg><use href="#i-reset"/></svg>Ripristina</button>
       </div>
     </section>
   </aside>
@@ -267,19 +356,28 @@
   <details>
     <summary>Come viene calcolato</summary>
     <ul>
-      <li><b>Materiale</b> = grammi × €/kg ÷ 1000 (+ spreco extra).</li>
-      <li><b>Energia</b> = ore × W ÷ 1000 × €/kWh.</li>
-      <li><b>Ammortamento</b> = ore × (prezzo stampante ÷ vita utile + manutenzione/ora).</li>
-      <li><b>Fallimenti</b>: i costi del piatto (materiale, energia, macchina, preparazione) vengono divisi per (1 − tasso fallimenti), perché ogni stampa riuscita deve ripagare anche quelle fallite.</li>
-      <li>Il costo del piatto viene diviso per i pezzi per piatto; poi si aggiungono post‑produzione e componenti per pezzo.</li>
-      <li><b>Prezzo</b> = costo × (1 + ricarico), maggiorato per coprire la commissione % della piattaforma, poi sconto quantità, arrotondamento e IVA.</li>
-      <li>Costi fissi d'ordine, progettazione, urgenza e commissione fissa vengono aggiunti al totale ordine (senza ricarico: sono già un prezzo).</li>
+      <li><b>Materiale</b>: grammi × €/kg ÷ 1000, più lo spreco extra.</li>
+      <li><b>Energia</b>: ore × W ÷ 1000 × €/kWh.</li>
+      <li><b>Usura</b>: ore × (prezzo stampante ÷ vita utile + manutenzione oraria).</li>
+      <li><b>Fallimenti</b>: i costi del piatto (materiale, energia, macchina, preparazione) si dividono per (1 − tasso fallimenti), perché ogni stampa riuscita ripaga anche quelle fallite.</li>
+      <li>Il costo del piatto si divide per i pezzi per piatto, poi si aggiungono rifinitura e componenti di ogni pezzo.</li>
+      <li><b>Prezzo</b>: costo × (1 + ricarico), maggiorato per coprire la commissione della piattaforma; poi sconto quantità, arrotondamento e IVA.</li>
+      <li>Imballaggio, progettazione, urgenza e commissione fissa si aggiungono al totale ordine senza ricarico.</li>
+      <li><b>Prezzo amici</b>: solo costi vivi più il margine amici; il tuo tempo conta solo se lo attivi.</li>
     </ul>
-    <p>I prezzi di stampanti e filamenti sono indicativi: modificali con i tuoi.</p>
+    <p>Prezzi di stampanti e filamenti indicativi: modificali con i tuoi. I dati restano nel tuo browser.</p>
   </details>
+  <p class="credits">3DPrinter Calculator · <a href="https://github.com/ADISOMMA/3DPrinter_Calculator">codice su GitHub</a></p>
 </footer>
 
-<div id="toast" class="toast"></div>
+<!-- Barra prezzo su mobile -->
+<a class="mobilebar" id="mobileBar" href="#results">
+  <span><small>Per pezzo</small><b id="mUnit">–</b></span>
+  <span><small>Totale</small><b id="mTotal">–</b></span>
+  <span class="go">Dettagli<svg><use href="#i-chev"/></svg></span>
+</a>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
